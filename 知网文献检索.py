@@ -19,10 +19,10 @@ class cnki():
         self.options.add_experimental_option('prefs', self.prefs)
         self.options.add_argument('--headless')
         self.options.add_argument('--disable-gpu')
-        s = Service("chromedriver.exe")
+        s = Service("chromedriver.exe")              #安装此执行程序在当前文件夹
         self.browser = webdriver.Chrome(service=s)
         # 300s无响应就down掉
-        self.wait = WebDriverWait(self.browser, 100)
+        self.wait = WebDriverWait(self.browser, 300)
         # 定义窗口最大化
         self.browser.maximize_window()
 
@@ -44,10 +44,10 @@ class cnki():
             time.sleep(3)
             total = self.browser.find_element(By.XPATH, '//*[@id="countPageDiv"]/span/em').text
             print(zy_mc+"一共有"+total+"条数据")
-            page = int(total)//1000+1
+            page = int(total)//20+1   #知网里面一页为20个文献
             a = 1
             for p in range(page):
-                for i in range(1, 1001):
+                for i in range(1, 20):
                     link = self.browser.find_element(By.XPATH,'//*[@id="gridTable"]/table/tbody/tr[%d]/td[2]/a' % i)
                     print(link)
                     flag1 = self.isElementExist('//*[@id="gridTable"]/table/tbody/tr[%d]/td[2]' % i)
@@ -108,7 +108,7 @@ class cnki():
 def main():
     try:
         data = xlrd.open_workbook('药名.xlsx')
-        table = data.sheets()[0]  # 获取第一页
+        table = data.sheets()[0]       # 获取第一页
         zymc_lists = table.col_values(0)
         zcy_lists = table.col_values(1)
         for i in range(0, 1700000):
@@ -119,7 +119,7 @@ def main():
             c = cnki(str1)
             time.sleep(1)
             c.getHtml(str1, str2)
-            time.sleep(2)
+            time.sleep(10)
 
     except Exception as e:
         print(e)
